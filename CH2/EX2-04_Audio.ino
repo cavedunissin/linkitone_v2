@@ -1,3 +1,4 @@
+//2017 CAVEDU
 #include <LAudio.h>
 
 #define KEY 5
@@ -12,11 +13,11 @@ void Scan_KEY()
 {
   if( digitalRead(KEY) == 0 )
   {
-    delay(20);			  // ©µ¿ğ20ms ¥H¸Ñ«ö¶s¼u¸õ	
-    if( digitalRead(KEY) == 0 ) //ÀË¬d«ö¶s¬O§_À£¤U
+    delay(20);			  // å»¶é²20ms ä»¥è§£æŒ‰éˆ•å½ˆè·³	
+    if( digitalRead(KEY) == 0 )   //æª¢æŸ¥æŒ‰éˆ•æ˜¯å¦å£“ä¸‹
     {
   	KEY_NUM = 1;	
-	while(digitalRead(KEY) == 0);		//©ñ¶}«ö¶s
+	while(digitalRead(KEY) == 0);		//æ”¾é–‹æŒ‰éˆ•
     }
   }
 }
@@ -64,7 +65,7 @@ void loop()
    AudioStatus status;
    Scan_KEY();
    status = LAudio.getStatus();
-   if(status == AudioEndOfFile) //ÀÉ®×¼½©ñ§¹²¦
+   if(status == AudioEndOfFile) //æª”æ¡ˆæ’­æ”¾å®Œç•¢
    {
      Status_Value = Play;
      Change_Status(Status_Value);
