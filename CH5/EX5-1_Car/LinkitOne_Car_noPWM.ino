@@ -1,3 +1,4 @@
+//2017 CAVEDU Education
 #include <LBT.h>
 #include <LBTServer.h>
 
@@ -27,7 +28,7 @@ void setup()
 
 void loop()
 {
-  if(LBTServer.available() > 0)
+  if(LBTServer.available() > 0)  //check for incoming message
   {
     val = LBTServer.read();
     switch(val)
