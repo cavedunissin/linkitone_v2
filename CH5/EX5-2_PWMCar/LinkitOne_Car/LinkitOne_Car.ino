@@ -1,14 +1,15 @@
+//CAVEDU 2017
 #include <LBT.h>
 #include <LBTServer.h>
 
-const int Motor_M1_1 = 4; // digital pin 5 of Arduino (PWM)    
+const int Motor_M1_1 = 4;  // digital pin 5 of Arduino (PWM)    
 const int Motor_M1_2 = 5;  // digital pin 6 of Arduino (PWM)  
-const int Motor_M2_1 = 6;     // digital pin 7 of Arduino
-const int Motor_M2_2 = 7;   // digital pin 8 of Arduino
-char val;  // variable to receive data from the serial port(bluetooth)
+const int Motor_M2_1 = 6;  // digital pin 7 of Arduino
+const int Motor_M2_2 = 7;  // digital pin 8 of Arduino
+char val;                  // variable to receive data from the serial port(bluetooth)
 
-const int Right_speed = 3;     // digital pin 7 of Arduino
-const int Left_speed = 9;    // digital pin 8 of Arduino
+const int Right_speed = 3; // digital pin 7 of Arduino
+const int Left_speed = 9;  // digital pin 8 of Arduino
 int wheelspeed;
 
 byte cmmd[20];
@@ -33,8 +34,7 @@ void setup()
 
 void loop()
 {
-  
-  if((insize = LBTServer.available())>0)
+  if((insize = LBTServer.available())>0)  //check for incoming message
   {
     for(int i = 0; i < insize; i++)
     {
