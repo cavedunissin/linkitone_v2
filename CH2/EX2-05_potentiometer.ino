@@ -1,15 +1,15 @@
-  const int led =3;
-   const int pot = A0;
+const int led =3;
+const int pot = A0;
    
-   void setup()
-   {
-       // ¤£»Ý­n³]©w¥ô¦óªF¦è
-   }
+void setup()
+{
+   //
+}
    
-   void loop()
-   {
-       int val = analogRead(pot);          // §ì¨ú¥iÅÜ¹qªýªº­È
-       val = map(val, 0, 1023, 0, 255);    // ±N°T¸¹¤À¦¨256­Ó¤ñ¨Ò¡]0¡ã255)
-       analogWrite(led, val);           // ±N¥iÅÜ¹qªýªº°T¸¹¶Ç¤JLED
-       delay(10);                    // µ¥«Ý10²@¬í
-   }  
+void loop()
+{
+   int val = analogRead(pot);       // get analog pin data
+   val = map(val, 0, 1023, 0, 255); // map analog data to 0ï½ž255
+   analogWrite(led, val);           // set LED brightness by potentiometer status
+   delay(10);                       // 10ms
+}  
