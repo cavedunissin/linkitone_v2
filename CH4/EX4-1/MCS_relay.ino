@@ -6,11 +6,11 @@
 #include <LDateTime.h>
 #define WIFI_AP "******"
 #define WIFI_PASSWORD "******"
-#define WIFI_AUTH LWIFI_WPA  // choose from LWIFI_OPEN, LWIFI_WPA, or LWIFI_WEP.
+#define WIFI_AUTH LWIFI_WPA         // choose from LWIFI_OPEN, LWIFI_WPA, or LWIFI_WEP.
 #define per 50
 #define per1 3
-#define DEVICEID "********" // Input your deviceId
-#define DEVICEKEY "***************" // Input your deviceKey
+#define DEVICEID "********"         // Input your MCS deviceId
+#define DEVICEKEY "***************" // Input your MCS deviceKey
 #define SITE_URL "api.mediatek.com"
 
 LWiFiClient c;
@@ -25,15 +25,14 @@ int portnum;
 int val = 0;
 String tcpdata = String(DEVICEID) + "," + String(DEVICEKEY) + ",0";
 String upload_relay;
-String tcpcmd_on = "relay_control,1";
-String tcpcmd_off = "relay_control,0";
+String tcpcmd_on = "relay_control,1";  //device Id of your boolean controller channel, 1 for on, 0 for off
+String tcpcmd_off = "relay_control,0"; 
 
 LWiFiClient c2;
 HttpClient http(c2);
 
 void setup()
 {
-  
   LTask.begin();
   LWiFi.begin();
   Serial.begin(115200);
@@ -97,11 +96,11 @@ void getconnectInfo(){
   int separater = 0;
   while (c2)
   {
-    int v = c2.read();
+    int v = c2.read(); 
     if (v != -1)
     {
       c = v;
-      Serial.print(c);
+      Serial.print(c);            //show what we got from MCS
       connection_info[ipcount]=c;
       if(c==',')
       separater=ipcount;
@@ -124,7 +123,8 @@ void getconnectInfo(){
   int j=0;
   separater++;
   for(i=separater;i<21 && j<5;i++)
-  {  port[j]=connection_info[i];
+  {  
+     port[j]=connection_info[i];
      j++;
   }
   Serial.println("The TCP Socket connection instructions:");
@@ -137,10 +137,10 @@ void getconnectInfo(){
 
 } //getconnectInfo
 
-void uploadstatus(){
+void uploadstatus() {
   //calling RESTful API to upload datapoint to MCS to report relay status
   Serial.println("calling connection");
-  LWiFiClient c2;  
+  LWiFiClient c2;
 
   while (!c2.connect(SITE_URL, 80))
   {
@@ -148,10 +148,10 @@ void uploadstatus(){
     delay(1000);
   }
   delay(100);
-  if(digitalRead(13)==1)
-  upload_relay = "relay_status,,1";
+  if (digitalRead(13) == 1)
+    upload_relay = "relay_status,,1";
   else
-  upload_relay = "relay_status,,0";
+    upload_relay = "relay_status,,0";
   int thislength = upload_relay.length();
   HttpClient http(c2);
   c2.print("POST /mcs/v2/devices/");
@@ -166,8 +166,8 @@ void uploadstatus(){
   c2.println("Content-Type: text/csv");
   c2.println("Connection: close");
   c2.println();
-  c2.println(upload_relay);
-  
+  c2.println(upload_relay);   //execute HTTP post to MCS once with pin status attached
+
   delay(500);
 
   int errorcount = 0;
@@ -199,13 +199,9 @@ void uploadstatus(){
     {
       Serial.println("no more content, disconnect");
       c2.stop();
-
     }
-    
   }
 }
-
-
 
 void connectTCP(){
   //establish TCP connection with TCP Server with designate IP and Port
@@ -227,8 +223,7 @@ void connectTCP(){
 void heartBeat(){
   Serial.println("send TCP heartBeat");
   c.println(tcpdata);
-  c.println();
-    
+  c.println();    
 } //heartBeat
 
 void loop()
@@ -265,5 +260,4 @@ void loop()
     uploadstatus();
     lrtc1 = rtc1;
   }
-  
 }
