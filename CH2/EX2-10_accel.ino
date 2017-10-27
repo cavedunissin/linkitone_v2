@@ -1,3 +1,4 @@
+//2017 CAVEDU
 #include <Wire.h>
 #include <ADXL345.h>
 //LED ++
@@ -64,50 +65,45 @@ void setup(){
 	pinMode(ledz, OUTPUT);
 }
 
-void loop(){
-  
-	//Boring accelerometer stuff   
-	int x,y,z;  
-	adxl.readXYZ(&x, &y, &z); //Åª¨úxyz¦U¶bªº­È
-	// Åã¥Üxyz¦U¶bªº­È
-	Serial.print("values of X , Y , Z: ");
-	Serial.print(x);
-	Serial.print(" , ");
-	Serial.print(y);
-	Serial.print(" , ");
-	Serial.println(z);
-	
-	double xyz[3];
-	double ax,ay,az;
-	adxl.getAcceleration(xyz);//±N³æ¦ìÂà´«¦¨­«¤O³æ¦ì¡¨g¡¨
-	ax = xyz[0];
-	ay = xyz[1];
-	az = xyz[2];
-	//Åã¥Üxyz¦U¶bªº­«¤O
-	Serial.print("X=");
-	Serial.print(ax);
-    Serial.println(" g");
-	Serial.print("Y=");
-	Serial.print(ay);
-    Serial.println(" g");
-	Serial.print("Z=");
-	Serial.println(az);
-    Serial.println(" g");
-	Serial.println("**********************");
-	delay(500); 
-	
-	//LED ++
-	analogWrite(ledx, brightnessX);
-	analogWrite(ledy, brightnessY);
-	analogWrite(ledz, brightnessZ);
-	brightnessX = brightnessX + (x/255);
-	if(	(y/255)>125){
-		brightnessY = 1;
-		}	
-	brightnessZ = brightnessZ + (z/255);
-	delay(30);
-	
-	//LED --
-	
+void loop() {
+  //Boring accelerometer stuff
+  int x, y, z;
+  adxl.readXYZ(&x, &y, &z); //read XYZ axis data
+  // show data
+  Serial.print("values of X , Y , Z: ");
+  Serial.print(x);
+  Serial.print(" , ");
+  Serial.print(y);
+  Serial.print(" , ");
+  Serial.println(z);
 
+  double xyz[3];
+  double ax, ay, az;
+  adxl.getAcceleration(xyz); //transfer to gravity "gâ€
+  ax = xyz[0];
+  ay = xyz[1];
+  az = xyz[2];
+  // show data
+  Serial.print("X=");
+  Serial.print(ax);
+  Serial.println(" g");
+  Serial.print("Y=");
+  Serial.print(ay);
+  Serial.println(" g");
+  Serial.print("Z=");
+  Serial.println(az);
+  Serial.println(" g");
+  Serial.println("**********************");
+  delay(500);
+
+  //LED ++
+  analogWrite(ledx, brightnessX);
+  analogWrite(ledy, brightnessY);
+  analogWrite(ledz, brightnessZ);
+  brightnessX = brightnessX + (x / 255);
+  if ( (y / 255) > 125) {
+    brightnessY = 1;
+  }
+  brightnessZ = brightnessZ + (z / 255);
+  delay(30);
 }
