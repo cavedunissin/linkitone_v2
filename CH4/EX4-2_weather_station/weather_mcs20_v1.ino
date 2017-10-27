@@ -1,3 +1,4 @@
+//2017 CAVEDU
 #include <LTask.h>
 #include <LWiFi.h>
 #include <LWiFiClient.h>
@@ -6,20 +7,16 @@
 #include <LDateTime.h>
 #include <HttpClient.h>
 
-#define BMP085_ADDRESS 0x77  // I2C address of BMP085
+#define BMP085_ADDRESS 0x77   // I2C address of BMP085
 const unsigned char OSS = 0;  // Oversampling Setting
 // Calibration values
-int16_t ac1;
-int16_t ac2;
-int16_t ac3;
-uint16_t ac4;
-uint16_t ac5;
-uint16_t ac6;
-int16_t b1;
-int16_t b2;
-int16_t mb;
-int16_t mc;
-int16_t md;
+int16_t ac1, ac2, ac3;
+uint16_t ac4, ac5, ac6;
+int16_t b1, b2, mb, mc, md;
+
+int state = 0;
+int i = 0;
+
 // b5 is calculated in bmp085GetTemperature(...), this variable is also used in bmp085GetPressure(...)
 // so ...Temperature(...) must be called before ...Pressure(...).
 long b5;
@@ -53,15 +50,13 @@ String tcpcmd_led_off = String(DEVICEID) + "," + String(DEVICEKEY) + ",0,fan_con
 String upload_led;
 HttpClient http(c2);
 
-//IPAddress siteIP;
 void setup() {
-
   Wire.begin();
   bmp085Calibration();
   LTask.begin();
   LWiFi.begin();
   Serial.begin(115200);
-  //while(!Serial) delay(1000); //mark this when ready for demo
+  while(!Serial) delay(1000); //mark this when ready for demo
   Serial.println("Connecting to AP");
   while (0 == LWiFi.connect(WIFI_AP, LWiFiLoginInfo(WIFI_AUTH, WIFI_PASSWORD)))
   {
@@ -75,19 +70,15 @@ void setup() {
   //connection();
   LDateTime.getRtc(&lrtc);
   LDateTime.getRtc(&lrtc2);
-   while (!c2.connect(SITE_URL, 80))
+  while (!c2.connect(SITE_URL, 80))
   {
-    Serial.println("Re-Connecting to WebSite");
-    delay(1000);
+     Serial.println("Re-Connecting to WebSite");
+     delay(1000);
   }
   delay(100);
   getconnectInfo();
   connectTCP();
-
 }
-int state = 0;
-int i = 0;
-
 
 void loop() {
   if (LWiFi.status() == LWIFI_STATUS_DISCONNECTED) {
@@ -97,9 +88,7 @@ void loop() {
       Serial.println("Connecting to AP");
       delay(1000);
     }
-
   }
-
 
   LDateTime.getRtc(&rtc);
   if ((rtc - lrtc) >= per) {
@@ -107,7 +96,7 @@ void loop() {
      senddata();
     lrtc = rtc;
   }
-/*  if ((rtc - lrtc2) >= 0.3) {
+  /*  if ((rtc - lrtc2) >= 0.3) {
     readdata();
     lrtc2 = rtc;
   }*/
@@ -138,10 +127,7 @@ void loop() {
     heartBeat();
     lrtc2 = rtc2;
   }
- 
-  
 }
-
 
 void getconnectInfo(){
   //calling RESTful API to get TCP socket connection
@@ -195,20 +181,21 @@ void getconnectInfo(){
     {
       Serial.println("no more content, disconnect");
       c2.stop();
-
     }
-    
   }
+  
   Serial.print("The connection info: ");
   Serial.println(connection_info);
   int i;
   for(i=0;i<separater;i++)
-  {  ip[i]=connection_info[i];
+  {  
+     ip[i]=connection_info[i];
   }
   int j=0;
   separater++;
   for(i=separater;i<21 && j<4;i++)
-  {  port[j]=connection_info[i];
+  {  
+     port[j]=connection_info[i];
      j++;
   }
   Serial.println("The TCP Socket connection instructions:");
@@ -217,9 +204,7 @@ void getconnectInfo(){
   Serial.print("Port: ");
   Serial.println(port);
   portnum = atoi (port);
-
 } //getconnectInfo
-
 
 void connectTCP(){
   //establish TCP connection with TCP Server with designate IP and Port
@@ -227,8 +212,8 @@ void connectTCP(){
   Serial.println("Connecting to TCP");
   while (0 == c.connect("54.255.209.252", 443))
   {
-    Serial.println("Re-Connecting to TCP");    
-    delay(1000);
+     Serial.println("Re-Connecting to TCP");    
+     delay(1000);
   }  
   Serial.println("send TCP connect");
   c.println(tcpdata);
@@ -240,7 +225,6 @@ void heartBeat(){
   Serial.println("send TCP heartBeat");
   c.println(tcpdata);
   c.println();
-    
 } //heartBeat
 
 void senddata() {
@@ -315,7 +299,6 @@ void senddata() {
     if (v != -1)
     {
       Serial.print(char(v));
-
       delay(1);
     }
     else
@@ -324,11 +307,9 @@ void senddata() {
       c2.stop();
     }
   }
-
-
   delay(300);
   unsigned long t2 = millis();
-}
+}//senddata
 
 float readsht21temp() {
   Wire.flush();
@@ -345,9 +326,8 @@ float readsht21temp() {
 
   float temperature = -46.85 + 175.72 * t / 65536.0 ;
   return temperature;
-
-
 }
+
 float readsht21humidity() {
   Wire.flush();
   Wire.beginTransmission(sht21address);
@@ -365,7 +345,6 @@ float readsht21humidity() {
   return humidity;
 }
 
-
 void bmp085Calibration()
 {
   ac1 = bmp085ReadInt(0xAA);
@@ -379,9 +358,6 @@ void bmp085Calibration()
   mb = bmp085ReadInt(0xBA);
   mc = bmp085ReadInt(0xBC);
   md = bmp085ReadInt(0xBE);
-
-
-
 }
 
 // Calculate temperature in deg C
